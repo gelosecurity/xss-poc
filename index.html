@@ -1,0 +1,15 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>XSS Test</title>
+</head>
+<body>
+    <h1>XSS PoC Page</h1>
+    <script>
+        alert('XSS by gelo from controlled domain: ' + document.domain);
+        // You can add other JavaScript here if needed for your PoC
+        // For example, trying to get user-agent, etc.
+        // alert(navigator.userAgent);
+    </script>
+</body>
+</html>
